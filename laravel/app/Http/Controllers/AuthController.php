@@ -1,27 +1,71 @@
 <?php namespace App\Http\Controllers;
 
-class AuthController extends Controller {
+use App\Models\User;
+use \Hash;
+use Auth;
 
-	/*
-	|--------------------------------------------------------------------------
-	| Welcome Controller
-	|--------------------------------------------------------------------------
-	|
-	| This controller renders the "marketing page" for the application and
-	| is configured to only allow guests. Like most of the other sample
-	| controllers, you are free to modify or remove it as you desire.
-	|
-	*/
-
-	/**
-	 * Show the application welcome screen to the user.
-	 *
-	 * @return Response
-	 */
-	public function process()
-	{
+class AuthController extends ReqController {
 	
-		return "asdf";
-	}
+	protected $rules = 
+	[
+	  'userCreate' =>
+  	  [
+        'password' => 'required', // "|min:8"
+        'email' => 'required|email|unique:users'
+      ],
+      
+    'userLogin' =>
+      [
+        'password' => 'required',
+        'email' => 'required|email'
+      ],
+	];
+	
+  protected $validActions = [
+	  "userCreate",
+	  "userLogin",
+	  "userDelete"
+  ];
 
+	protected function userCreate($input, &$output)
+	{
+	  	 
+    $user = new User;
+    $user->email = $input['email'];
+    $user->password = Hash::make($input['password']);
+    $user->save();
+	 
+    $output['success'] = true;
+	}
+	
+	protected function userLogin($input, &$output)
+  { 
+    $login = Auth::attempt(['email' => $input['email'], 'password' => $input['password']]);
+    
+    if($login)
+    {
+      $output['success'] = true;
+    }
+    else
+    {
+      $output['success'] = false;
+    }
+  }
+  
+	protected function userDelete($input, &$output)
+  { 
+    $valid = Auth::check();
+    
+    if($valid)
+    {
+      $user = Auth::User();
+      $user->delete();
+      $output['success'] = true;
+    }
+    else
+    {
+      $output['success'] = false;
+      $output['reasons'] = ['Not authenticated'];
+    }
+  }
 }
