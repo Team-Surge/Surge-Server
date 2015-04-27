@@ -1,26 +1,63 @@
 <?php namespace App\Http\Controllers;
 
+use \View;
+
 class TestController extends Controller {
 
-	/*
-	|--------------------------------------------------------------------------
-	| Welcome Controller
-	|--------------------------------------------------------------------------
-	|
-	| This controller renders the "marketing page" for the application and
-	| is configured to only allow guests. Like most of the other sample
-	| controllers, you are free to modify or remove it as you desire.
-	|
-	*/
-
-	/**
-	 * Show the application welcome screen to the user.
-	 *
-	 * @return Response
-	 */
 	public function index()
 	{
-		return view('test');
+	  $data = [];
+	  $data['tests'] = $this->getTests();
+	
+		return view('test', $data);
 	}
+
+  protected function getTests()
+  {
+    $path = base_path() . "/resources/views/test";
+    
+    $output = "";
+    
+    $tests = [];
+    
+    if(!is_dir($path))
+    {
+      return $path;
+    }
+    
+    $files = array_diff(scandir($path), ['.', '..']);
+    
+    foreach($files as $dir)
+    {
+      $subpath = $path . '/' . $dir;
+    
+      if(! is_dir($subpath) )
+      {
+        continue;
+      }
+      
+      $views = array_diff(scandir($subpath), ['.', '..']);
+      
+      $tests[$dir] = [];
+    
+      foreach($views as $view)
+      {
+        $viewName = 'test' . '.' . $dir . '.' . basename($view, '.blade.php');
+        
+        if(View::exists($viewName))
+        {
+          $output .= $viewName . ", ";
+          
+          $tests[$dir][] = $viewName;
+          
+        }
+        
+      }
+      
+    }
+    
+    return $tests;
+
+  }
 
 }
