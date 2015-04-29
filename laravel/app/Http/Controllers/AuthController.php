@@ -24,6 +24,7 @@ class AuthController extends ReqController {
   protected $validActions = [
 	  "userCreate",
 	  "userLogin",
+	  "userLogout",
 	  "userDelete"
   ];
 
@@ -51,6 +52,13 @@ class AuthController extends ReqController {
       $output['success'] = false;
     }
   }
+  
+	protected function userLogout($input, &$output)
+  { 
+    Auth::logout();
+    $output['success'] = true;
+  }
+  
   
 	protected function userDelete($input, &$output)
   { 
