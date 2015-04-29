@@ -54,20 +54,6 @@ class PostController extends ReqController {
     }
 
 	}
-	
-	protected function userLogin($input, &$output)
-  { 
-    $login = Auth::attempt(['email' => $input['email'], 'password' => $input['password']]);
-    
-    if($login)
-    {
-      $output['success'] = true;
-    }
-    else
-    {
-      $output['success'] = false;
-    }
-  }
   
 	protected function postDelete($input, &$output)
   { 
@@ -104,6 +90,10 @@ class PostController extends ReqController {
     }
   }
   
-  
+	protected function postVote($input, &$output)
+	{
+    $output['success'] = false;
+    $output['reasons'] = ['Action not yet implemented'];
+	}
   
 }
