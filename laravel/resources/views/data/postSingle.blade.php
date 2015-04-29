@@ -2,6 +2,8 @@
 
 @section('dataTable')
 
+<h3>Post</h3>
+
 <table class="table table-striped table-bordered">
 
 <tr>
@@ -55,4 +57,34 @@ Delete
 
 </table>
 
+<h3>Votes</h3>
+
+<table class="table table-striped table-bordered">
+<tr>
+<th>
+Post ID
+</th>
+<th>
+User ID
+</th>
+<th>
+Value
+</th>
+</tr>
+@foreach($post->votes as $vote)
+
+<tr>
+<td>
+{{$vote->post_id}}
+</td>
+<td>
+{{$vote->user_id}}
+</td>
+<td>
+{{$vote->vote}}
+</td>
+</tr>
+
+@endforeach
+</table>
 @endsection

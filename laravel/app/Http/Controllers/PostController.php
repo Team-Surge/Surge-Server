@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Vote;
 use \Hash;
 use Auth;
 
@@ -93,8 +94,59 @@ class PostController extends ReqController {
   
 	protected function postVote($input, &$output)
 	{
-    $output['success'] = false;
-    $output['reasons'] = ['Action not yet implemented'];
+    $valid = Auth::check();
+    
+    if(!$valid)
+    {
+      $output['success'] = false;
+      $output['reasons'] = ['Not authenticated'];
+    }
+    else
+    {
+      $user = Auth::User();    
+      $post = Post::find($input['postId']);
+      
+      if(!$post)
+      {
+        $output['success'] = false;
+        $output['reasons'] = ['No such post'];  
+      }
+      else
+      {  
+        $dir = 0;
+        
+        switch($input['direction'])
+        {
+          case "up":
+            $dir = 1;
+          break;
+          
+          case "down":
+            $dir = -1;
+          break;
+          
+          case "neutral":
+          default:
+            $dir = 0;
+          break;
+
+        }
+
+        $vote = Vote::firstOrNew(
+        [
+          'user_id' => $user->id,
+          'post_id' => $post->id,
+        ]);
+        
+        $vote->vote = $dir;
+        
+        $vote->save();
+        
+        $output['success'] = true;
+
+      }
+    }
+    
 	}
 	
 	protected function postList($input, &$output)
