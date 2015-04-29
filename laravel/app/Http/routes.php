@@ -17,4 +17,6 @@ Route::get('/test', 'TestController@index');
 
 Route::any('/auth', 'AuthController@process');
 
+Route::any('/post', 'PostController@process');
+
 Route::any('/data/{category?}', 'DataController@index');
