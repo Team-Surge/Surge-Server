@@ -29,7 +29,8 @@ class PostController extends ReqController {
   protected $validActions = [
 	  "postCreate",
 	  "postDelete",
-	  "postVote"
+	  "postVote",
+	  "postList"
   ];
 
 	protected function postCreate($input, &$output)
@@ -95,5 +96,10 @@ class PostController extends ReqController {
     $output['success'] = false;
     $output['reasons'] = ['Action not yet implemented'];
 	}
-  
+	
+	protected function postList($input, &$output)
+  {
+    $output['success'] = true;
+    $output['posts'] = Post::all()->toJson();
+  }  
 }
