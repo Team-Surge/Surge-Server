@@ -19,4 +19,21 @@ Route::any('/auth', 'AuthController@process');
 
 Route::any('/post', 'PostController@process');
 
-Route::any('/data/{category?}', 'DataController@index');
+Route::get('/data', 
+function()
+{
+    return redirect('/data/users');
+}
+);
+
+Route::resource(
+'/data/users',
+'Data\UserController',
+['only' => ['index', 'destroy', 'show']]
+);
+
+Route::resource(
+'/data/posts',
+'Data\PostController',
+['only' => ['index', 'destroy', 'show']]
+);

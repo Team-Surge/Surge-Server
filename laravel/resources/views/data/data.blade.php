@@ -10,7 +10,7 @@
             <div class="panel-body">
               <ul class="nav nav-pills nav-stacked">
                 <li role="presentation"><a href="/data/users">Users</a></li>
-                <li role="presentation"><a href="/data/yaks">Yaks</a></li>
+                <li role="presentation"><a href="/data/posts">Posts</a></li>
               </ul>
             </div>
           </div>
@@ -19,7 +19,7 @@
         </div>
         <div class="col-sm-9">
         
-        Nothing to see here yet...
+        @yield('dataTable')
         
         </div>
       </div>
