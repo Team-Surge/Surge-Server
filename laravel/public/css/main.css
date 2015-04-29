@@ -4,8 +4,8 @@ body {
 
 .ajax_test_block
 {
-  margin:1em;
-  padding:1em;
+  margin:1em 0 1em 0;
+  padding:0.5em;
 }
 
 .ajax_test_group .ajax_test_block:nth-child(even)
