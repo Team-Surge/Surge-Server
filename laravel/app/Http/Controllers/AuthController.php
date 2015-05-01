@@ -41,7 +41,8 @@ class AuthController extends ReqController {
 	
 	protected function userLogin($input, &$output)
   { 
-    $login = Auth::attempt(['email' => $input['email'], 'password' => $input['password']]);
+    // Attempt login with remember as true
+    $login = Auth::attempt(['email' => $input['email'], 'password' => $input['password']], true);
     
     if($login)
     {
