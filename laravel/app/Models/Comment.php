@@ -2,21 +2,14 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model {
+class Comment extends Model {
 
-	protected $table = 'posts';
+	protected $table = 'comments';
 	protected $hidden = ['user_id'];
-
-
+	
   public function votes()
   {
       return $this->morphMany('App\Models\Vote', 'vote');
   }
-  
-  public function comments()
-  {
-      return $this->hasMany('App\Models\Comment');
-  }
-
 
 }

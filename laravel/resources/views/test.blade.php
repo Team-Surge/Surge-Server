@@ -51,3 +51,7 @@
 
     </div><!-- /.container -->
 @endsection
+
+@section('scripts')
+    <script src="/js/testAjax.js"></script>
+@endsection

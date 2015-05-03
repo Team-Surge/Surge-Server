@@ -19,7 +19,7 @@ class PostController extends \App\Http\Controllers\Controller {
   {
     $data = [];
     
-    $post = Post::with('votes')->find($id);
+    $post = Post::with('votes','comments')->find($id);
     
     if(!$post)
     {

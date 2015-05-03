@@ -27,12 +27,19 @@ class CreateTablePosts extends Migration {
       $table->string('content');
       
       // Post content
-      $table->string('handle');
+      $table->string('handle')->nullable();
+      
+      // Vote count cache
+      $table->integer('voteCount')->default(0);
+      
+      // Comment count cache
+      $table->integer('commentCount')->default(0);
       
       // Foreign key in user table
       $table->foreign('user_id')
         ->references('id')->on('users')
         ->onDelete('cascade');
+
     });
       
 	}

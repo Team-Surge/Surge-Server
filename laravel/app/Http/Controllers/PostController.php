@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Comment;
 use App\Models\Vote;
 use \Hash;
 use Auth;
@@ -15,11 +16,22 @@ class PostController extends ReqController {
         'content' => 'required'
       ],
       
+	  'postCreateComment' =>
+  	  [
+        'postId' => 'required',
+        'content' => 'required'
+      ],
+      
     'postDelete' =>
       [
         'postId' => 'required'
       ],
-      
+
+    'postDetail' =>
+      [
+        'postId' => 'required'
+      ],
+
     'postVote' =>
       [
         'postId' => 'required',
@@ -29,7 +41,9 @@ class PostController extends ReqController {
 	
   protected $validActions = [
 	  "postCreate",
+	  "postCreateComment",
 	  "postDelete",
+	  "postDetail",
 	  "postVote",
 	  "postList"
   ];
@@ -51,6 +65,43 @@ class PostController extends ReqController {
       $post->handle = $input['handle'];
       $post->content = $input['content'];
       $post->save();
+      
+      $output['success'] = true; 
+    }
+
+	}
+  
+	protected function postCreateComment($input, &$output)
+	{
+	
+    $valid = Auth::check();
+	  
+	  if(!$valid)
+	  {
+      $output['success'] = false;
+      $output['reasons'] = ['Not authenticated'];
+    }
+    else
+    { 
+      $post = Post::find($input['postId']);
+      
+      if($post)
+      {
+      
+        $comment = new Comment;
+        $comment->user_id = Auth::user()->id;
+        $comment->content = $input['content'];
+
+        $post->comments()->save($comment);
+        
+        $post->increment('commentCount', 1);
+      
+      }
+      else
+      {
+        $output['success'] = false;
+        $output['reasons'] = ['No such post'];
+      }
       
       $output['success'] = true; 
     }
@@ -92,6 +143,23 @@ class PostController extends ReqController {
     }
   }
   
+	protected function postDetail($input, &$output)
+  { 
+   
+    $post = Post::with('comments')->find($input['postId']);
+    
+    if(!$post)
+    {
+      $output['success'] = false;
+      $output['reasons'] = ['No such post'];  
+    }
+    else
+    {  
+      $output['post'] = $post;
+      $output['success'] = true;
+    }
+  }
+  
 	protected function postVote($input, &$output)
 	{
     $valid = Auth::check();
@@ -106,7 +174,7 @@ class PostController extends ReqController {
       $user = Auth::User();    
       $post = Post::find($input['postId']);
       
-      if(!$post)
+      if(is_null($post))
       {
         $output['success'] = false;
         $output['reasons'] = ['No such post'];  
@@ -131,27 +199,37 @@ class PostController extends ReqController {
           break;
 
         }
-
-        $vote = Vote::firstOrNew(
-        [
-          'user_id' => $user->id,
-          'post_id' => $post->id,
-        ]);
+       
+        $vote = $post->votes()->where('user_id', '=', $user->id)->first();
         
-        $vote->vote = $dir;
+        $voteOld = 0;
         
-        $vote->save();
+        if(is_null($vote))
+        {
+          $vote = new Vote;
+          $vote->user_id = $user->id;
+          $vote->vote_id = $post->id;
+          
+          $voteOld = $vote->value;
+        }
+        
+        $vote->value = $dir;
+        $post->votes()->save($vote);
+        
+        $post->increment('voteCount', $dir + ($voteOld * -1));
         
         $output['success'] = true;
 
       }
     }
-    
 	}
 	
 	protected function postList($input, &$output)
   {
     $output['success'] = true;
-    $output['posts'] = Post::all()->toJson();
+    
+    $posts = Post::all();
+    
+    $output['posts'] = $posts;
   }  
 }

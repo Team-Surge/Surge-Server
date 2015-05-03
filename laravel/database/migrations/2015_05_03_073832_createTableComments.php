@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableVotes extends Migration {
+class CreateTableComments extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,28 +12,36 @@ class CreateTableVotes extends Migration {
 	 */
 	public function up()
 	{
-    Schema::create('votes', function($table)
+    Schema::create('comments', function($table)
     {
+      // Post ID
       $table->increments('id');
       
-      // Timestamps for vote
+      // Timestamps for post
       $table->timestamps();
       
       // Owner ID
       $table->integer('user_id')->unsigned();
       
-      // Vote polymorph
-      $table->morphs('vote');
+      // Referenced post
+      $table->integer('post_id')->unsigned();
       
-      // Vote value. Typically {-1, 0, 1}
-      // Allow for "super votes" of larger weight later
-      $table->tinyInteger('value');
+      // Post content
+      $table->string('content');
+      
+      // Vote count cache
+      $table->integer('voteCount')->default(0);
       
       // Foreign key in user table
       $table->foreign('user_id')
         ->references('id')->on('users')
         ->onDelete('cascade');
         
+      // Foreign key in user table
+      $table->foreign('post_id')
+        ->references('id')->on('posts')
+        ->onDelete('cascade');
+
     });
 	}
 
@@ -44,7 +52,7 @@ class CreateTableVotes extends Migration {
 	 */
 	public function down()
 	{
-    Schema::dropIfExists('votes');
+    Schema::dropIfExists('comments');
 	}
 
 }

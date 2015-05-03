@@ -8,5 +8,6 @@
     <input type="text" name="postId" class="form-control"/>
   </div>
   <input type="submit" name="direction" value="up" class="btn btn-default"/>
+  <input type="submit" name="direction" value="neutral" class="btn btn-default"/>
   <input type="submit" name="direction" value="down" class="btn btn-default"/>
 </form>
