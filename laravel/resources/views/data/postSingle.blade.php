@@ -106,14 +106,10 @@ Value
 <col>
 <col>
 <col style="width:100%">
-<col>
-<col>
 <tr>
 <th>ID</th>
 <th>User</th>
 <th>content</th>
-<th>Show</th>
-<th>Delete</th>
 @foreach($post->comments as $i => $comment)
 </tr>
 <tr>
@@ -125,16 +121,6 @@ Value
 </td>
 <td>
 {{$comment->content}}
-</td>
-<td>
-<a class="btn btn-default" href="/data/posts/{{$post->id}}">Show</a>
-</td>
-<td>
-<form action="/data/posts/{{$post->id}}" method="POST">
-    <input type="hidden" name="_method" value="DELETE"/>
-    <input type="hidden" name="parent" value="{{$post->parent}}"/>
-    <button type="submit" class="btn btn-danger">Delete</button>
-</form>
 </td>
 </tr>
 
