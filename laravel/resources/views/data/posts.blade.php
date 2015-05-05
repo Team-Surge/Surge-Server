@@ -5,14 +5,12 @@
 <table class="table table-striped table-bordered">
 <col>
 <col>
-<col>
 <col style="width:100%">
 <col>
 <col>
 <tr>
 <th>ID</th>
 <th>User</th>
-<th>Parent</th>
 <th>content</th>
 <th>Show</th>
 <th>Delete</th>
@@ -24,9 +22,6 @@
 </td>
 <td>
 {{$post->user_id}}
-</td>
-<td>
-{{$post->parent}}
 </td>
 <td>
 {{$post->content}}
