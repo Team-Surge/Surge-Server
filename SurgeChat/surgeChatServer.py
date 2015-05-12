@@ -11,7 +11,7 @@ class surgeProtocol(basic.LineReceiver):
     #info about each individual connection (like a name) in this
     #class. (NOT ENTIRELY SURE ABOUT THIS ;P)
     clientName = 'anonymous'
-
+    peerInfo = None
 
     #when a client makes a connection to the server, this runs
     def connectionMade(self):
@@ -56,7 +56,11 @@ class surgeProtocol(basic.LineReceiver):
             print 'current client list is:', self.factory.connectedClients
 
         else:
-            self.transport.write('You sent me: ' + line + '\n')
+            if self.clientName in self.factory.connectedClients:
+                self.transport.write('got your message!\n')
+            else:
+                self.transport.write('Wrong introduction. Goodbye\n')
+                self.transport.loseConnection()
 
 
 
