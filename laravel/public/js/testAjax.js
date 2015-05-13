@@ -75,6 +75,9 @@ $( '.ajax_test_form' ).submit(function( event ) {
   // Specify URL
   $('#ajaxTestUrl').empty().text(url);
   
+  // Show loading in the result...
+  $('#ajaxTestResult').empty().text("Loading...");
+  
   // Send the data using post
   var posting = $.post( url, data  );
  
