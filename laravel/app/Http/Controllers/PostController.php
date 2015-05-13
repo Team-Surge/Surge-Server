@@ -12,14 +12,14 @@ class PostController extends ReqController {
 	[
 	  'postCreate' =>
   	  [
-        'handle' => 'required',
-        'content' => 'required'
+        'handle' => 'string|max:15',
+        'content' => 'required|string|min:1|max:200'
       ],
       
 	  'postCreateComment' =>
   	  [
         'postId' => 'required',
-        'content' => 'required'
+        'content' => 'required|string|min:1|max:200'
       ],
       
     'postDelete' =>
@@ -35,7 +35,7 @@ class PostController extends ReqController {
     'postVote' =>
       [
         'postId' => 'required',
-        'direction' => 'required|in:up,down,neutral',
+        'direction' => 'required|string|in:up,down,neutral',
       ],
 	];
 	
