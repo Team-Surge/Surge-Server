@@ -26,23 +26,6 @@ User ID
 
 <tr>
 <th>
-Parent
-</th>
-<td>
-
-{{$post->parent}}
-
-@if($post->parent != null)
-
-<a class="btn btn-default pull-right" href="/data/posts/{{$post->parent}}">Show</a>
-
-@endif
-
-</td>
-</tr>
-
-<tr>
-<th>
 Handle
 </th>
 <td>
