@@ -228,7 +228,42 @@ class PostController extends ReqController {
   {
     $output['success'] = true;
     
-    $posts = Post::all();
+    $votes = ['-1' => 'down', 0 => 'neutral', 1 => 'up'];
+    
+    if(Auth::check())
+    {
+      $posts = Post::with(
+      ['votes' => function($query)
+        {
+          $user = Auth::User();
+          $query->where('user_id', '=', $user->id);
+        }
+      ])->get();
+      
+      foreach($posts as $post)
+      {
+        if(isset($post['votes']) && isset($post['votes'][0]))
+        {
+          $value = $post['votes'][0]['value'];
+          $post['userVote'] = isset($votes[$value]) ? $votes[$value] : "invalid";
+        }
+        else
+        {
+          $post['userVote'] = 'neutral';
+        }
+        
+        unset($post['votes']);
+      }
+    }
+    else
+    {
+      // This is the case where a user is not logged in.
+      // Eventually we will not allow unauthed users to view posts
+      $posts = Post::all();
+    }
+    
+    
+    
     
     $output['posts'] = $posts;
   }  
