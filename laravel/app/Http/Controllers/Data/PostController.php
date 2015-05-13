@@ -2,6 +2,7 @@
 
 use App\Models\Post;
 use \Auth;
+use \Session;
 
 class PostController extends \App\Http\Controllers\Controller {
 
@@ -9,7 +10,7 @@ class PostController extends \App\Http\Controllers\Controller {
 	{
 	  $data = [];
 	
-	  // Todo... enable this once the table exists
+	  $data['pageid'] = "posts";
 	  $data['posts'] = Post::all();
 	  	
 		return view('data.posts', $data);
@@ -19,6 +20,7 @@ class PostController extends \App\Http\Controllers\Controller {
   {
     $data = [];
     
+	  $data['pageid'] = "posts";
     $post = Post::with('votes','comments')->find($id);
     
     if(!$post)
@@ -39,6 +41,12 @@ class PostController extends \App\Http\Controllers\Controller {
     if($post)
     {
       $post->delete();
+      
+      Session::flash('message', ['type' => 'success', 'message' => 'post deleted']);
+    }
+    else
+    {
+      Session::flash('message', ['type' => 'info', 'message' => 'post not deleted: no such post']);
     }
     
     return redirect()->action('\\' . get_class($this) . '@index'); 
