@@ -37,6 +37,11 @@ class PostController extends ReqController {
         'postId' => 'required',
         'direction' => 'required|string|in:up,down,neutral',
       ],
+    'postCommentVote' =>
+      [
+        'commentId' => 'required',
+        'direction' => 'required|string|in:up,down,neutral',
+      ],
 	];
 	
   protected $validActions = [
@@ -45,6 +50,7 @@ class PostController extends ReqController {
 	  "postDelete",
 	  "postDetail",
 	  "postVote",
+	  "postCommentVote",
 	  "postList"
   ];
 
@@ -144,9 +150,43 @@ class PostController extends ReqController {
   }
   
 	protected function postDetail($input, &$output)
-  { 
+  {
+  
+    $votes = ['-1' => 'down', 0 => 'neutral', 1 => 'up'];
    
-    $post = Post::with('comments')->find($input['postId']);
+    if(Auth::Check())
+    {
+      $post = Post::with(
+      ['comments', 'comments.votes' => 
+          function($query)
+          {
+            $user = Auth::User();
+            $query->where('user_id', '=', $user->id);
+          }
+      ]
+      )->find($input['postId']);
+      
+      
+      foreach($post['comments'] as $comment)
+      {
+        if(isset($comment['votes']) && isset($comment['votes'][0]))
+        {
+          $value = $comment['votes'][0]['value'];
+          $comment['userVote'] = isset($votes[$value]) ? $votes[$value] : "invalid";
+        }
+        else
+        {
+          $comment['userVote'] = 'neutral';
+        }
+        
+        unset($comment['votes']);
+      }
+      
+    }
+    else
+    {
+      $post = Post::with('comments')->find($input['postId']);
+    }
     
     if(!$post)
     {
@@ -218,7 +258,6 @@ class PostController extends ReqController {
         
         $post->increment('voteCount', $dir + ($voteOld * -1));
         
-        $output['voteOld'] = $voteOld;
         $output['success'] = true;
 
       }
@@ -263,9 +302,71 @@ class PostController extends ReqController {
       $posts = Post::all();
     }
     
-    
-    
-    
     $output['posts'] = $posts;
-  }  
+  }
+
+	protected function postCommentVote($input, &$output)
+	{
+    $valid = Auth::check();
+    
+    if(!$valid)
+    {
+      $output['success'] = false;
+      $output['reasons'] = ['Not authenticated'];
+    }
+    else
+    {
+      $user = Auth::User();    
+      $comment = Comment::find($input['commentId']);
+      
+      if(is_null($comment))
+      {
+        $output['success'] = false;
+        $output['reasons'] = ['No such post'];  
+      }
+      else
+      {  
+        $dir = 0;
+        
+        switch($input['direction'])
+        {
+          case "up":
+            $dir = 1;
+          break;
+          
+          case "down":
+            $dir = -1;
+          break;
+          
+          case "neutral":
+          default:
+            $dir = 0;
+          break;
+
+        }
+       
+        $vote = $comment->votes()->where('user_id', '=', $user->id)->first();
+        
+        $voteOld = 0;
+        
+        if(is_null($vote))
+        {
+          $vote = new Vote;
+          $vote->user_id = $user->id;
+          $vote->vote_id = $comment->id;          
+        }
+
+        $voteOld = $vote->value;
+        
+        $vote->value = $dir;
+        $comment->votes()->save($vote);
+        
+        $comment->increment('voteCount', $dir + ($voteOld * -1));
+        
+        $output['success'] = true;
+
+      }
+    }
+	}
+
 }
