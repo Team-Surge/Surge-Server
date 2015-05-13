@@ -208,16 +208,17 @@ class PostController extends ReqController {
         {
           $vote = new Vote;
           $vote->user_id = $user->id;
-          $vote->vote_id = $post->id;
-          
-          $voteOld = $vote->value;
+          $vote->vote_id = $post->id;          
         }
+
+        $voteOld = $vote->value;
         
         $vote->value = $dir;
         $post->votes()->save($vote);
         
         $post->increment('voteCount', $dir + ($voteOld * -1));
         
+        $output['voteOld'] = $voteOld;
         $output['success'] = true;
 
       }
