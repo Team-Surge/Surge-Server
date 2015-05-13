@@ -37,3 +37,9 @@ Route::resource(
 'Data\PostController',
 ['only' => ['index', 'destroy', 'show']]
 );
+
+Route::resource(
+'/data/comments',
+'Data\CommentController',
+['only' => ['index', 'destroy', 'show']]
+);
