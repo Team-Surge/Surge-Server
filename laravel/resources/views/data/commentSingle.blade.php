@@ -49,6 +49,15 @@ Content
 
 <tr>
 <th>
+Score
+</th>
+<td>
+{{$comment->voteCount}}
+</td>
+</tr>
+
+<tr>
+<th>
 Delete
 </th>
 <td>

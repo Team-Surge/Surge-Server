@@ -45,6 +45,15 @@ Content
 
 <tr>
 <th>
+Score
+</th>
+<td>
+{{$post->voteCount}}
+</td>
+</tr>
+
+<tr>
+<th>
 Delete
 </th>
 <td>
