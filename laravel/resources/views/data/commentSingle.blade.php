@@ -8,7 +8,7 @@
 
 <tr>
 <th>
-Post ID
+ID
 </th>
 <td>
 {{$comment->id}}
@@ -66,6 +66,9 @@ Delete
 <table class="table table-striped table-bordered">
 <tr>
 <th>
+ID
+</th>
+<th>
 User ID
 </th>
 <th>
@@ -75,6 +78,9 @@ Value
 @foreach($comment->votes as $vote)
 
 <tr>
+<td>
+{{$vote->id}}
+</td>
 <td>
 {{$vote->user_id}}
 </td>
