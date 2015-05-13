@@ -3,6 +3,7 @@
 use App\Models\Comment;
 use \Auth;
 use \Session;
+use \Request;
 
 class CommentController extends \App\Http\Controllers\Controller {
 
@@ -49,7 +50,14 @@ class CommentController extends \App\Http\Controllers\Controller {
       Session::flash('message', ['type' => 'info', 'message' => 'comment not deleted: no such comment']);
     }
     
-    return redirect()->action('\\' . get_class($this) . '@index'); 
+    if(Request::Input('return') == 'back')
+    {
+      return redirect()->back();
+    }
+    else
+    {
+      return redirect()->action('\\' . get_class($this) . '@index');
+    }
   }
 
 }
