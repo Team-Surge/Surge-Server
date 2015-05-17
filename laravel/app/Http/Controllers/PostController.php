@@ -51,7 +51,8 @@ class PostController extends ReqController {
 	  "postDetail",
 	  "postVote",
 	  "postCommentVote",
-	  "postList"
+	  "postList",
+	  "postListSelf"
   ];
 
 	protected function postCreate($input, &$output)
@@ -268,8 +269,6 @@ class PostController extends ReqController {
   {
     $output['success'] = true;
     
-    $votes = ['-1' => 'down', 0 => 'neutral', 1 => 'up'];
-    
     if(Auth::check())
     {
       $posts = Post::with(
@@ -279,21 +278,9 @@ class PostController extends ReqController {
           $query->where('user_id', '=', $user->id);
         }
       ])->get();
-      
-      foreach($posts as $post)
-      {
-        if(isset($post['votes']) && isset($post['votes'][0]))
-        {
-          $value = $post['votes'][0]['value'];
-          $post['userVote'] = isset($votes[$value]) ? $votes[$value] : "invalid";
-        }
-        else
-        {
-          $post['userVote'] = 'neutral';
-        }
-        
-        unset($post['votes']);
-      }
+
+      $this->votesToStatus($posts);      
+
     }
     else
     {
@@ -303,6 +290,56 @@ class PostController extends ReqController {
     }
     
     $output['posts'] = $posts;
+  }
+  
+	protected function postListSelf($input, &$output)
+  { 
+    if(Auth::check())
+    {
+      $user = Auth::User();
+    
+      $posts = $user->posts()->with(
+      ['votes' => function($query)
+        {
+          $user = Auth::User();
+          $query->where('user_id', '=', $user->id);
+        }
+      ])->get();
+
+      $this->votesToStatus($posts);     
+      
+      $output['success'] = true; 
+      $output['posts'] = $posts;
+
+    }
+    else
+    {
+      
+      $output['success'] = false;
+      $output['reasons'] = ['Not authenticated'];  
+    }
+    
+
+  }
+  
+  protected function votesToStatus(&$posts)
+  {
+    $votes = ['-1' => 'down', 0 => 'neutral', 1 => 'up'];
+  
+    foreach($posts as $post)
+    {
+      if(isset($post['votes']) && isset($post['votes'][0]))
+      {
+        $value = $post['votes'][0]['value'];
+        $post['userVote'] = isset($votes[$value]) ? $votes[$value] : "invalid";
+      }
+      else
+      {
+        $post['userVote'] = 'neutral';
+      }
+      
+      unset($post['votes']);
+    }
   }
 
 	protected function postCommentVote($input, &$output)
