@@ -13,6 +13,7 @@
                 <?php
                   
                   $pages = [];
+                  $pages[] = ['id' => 'tables', 'name' => 'Tables'];
                   $pages[] = ['id' => 'users', 'name' => 'Users'];
                   $pages[] = ['id' => 'posts', 'name' => 'Posts'];
                   $pages[] = ['id' => 'comments', 'name' => 'Comments'];

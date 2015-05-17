@@ -22,9 +22,12 @@ Route::any('/post', 'PostController@process');
 Route::get('/data', 
 function()
 {
-    return redirect('/data/users');
+    return redirect('/data/tables');
 }
 );
+
+Route::get('/data/tables', 'Data\TableController@index');
+Route::post('/data/tables/{table?}', 'Data\TableController@process');
 
 Route::resource(
 '/data/users',
