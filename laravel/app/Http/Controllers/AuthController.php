@@ -25,7 +25,8 @@ class AuthController extends ReqController {
 	  "userCreate",
 	  "userLogin",
 	  "userLogout",
-	  "userDelete"
+	  "userDelete",
+	  "userStatus"
   ];
 
 	protected function userCreate($input, &$output)
@@ -77,4 +78,16 @@ class AuthController extends ReqController {
       $output['reasons'] = ['Not authenticated'];
     }
   }
+  
+	protected function userStatus($input, &$output)
+	{
+	  $output['loggedIn'] = Auth::check();
+	  
+	  if($output['loggedIn'])
+	  {
+	    $ouput['userId'] = Auth::User();
+	  }
+	  
+    $output['success'] = true;
+	}
 }
