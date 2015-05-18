@@ -23,7 +23,10 @@ class CreateTableVotes extends Migration {
       $table->integer('user_id')->unsigned();
       
       // Vote polymorph
-      $table->morphs('vote');
+      // $table->morphs('vote');
+      // morphs creates a too-long vote_type
+      $table->integer('vote_id')->unsigned();
+      $table->string('vote_type');
       
       // Vote value. Typically {-1, 0, 1}
       // Allow for "super votes" of larger weight later
