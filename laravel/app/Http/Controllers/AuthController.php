@@ -85,7 +85,7 @@ class AuthController extends ReqController {
 	  
 	  if($output['loggedIn'])
 	  {
-	    $ouput['userId'] = Auth::User();
+	    $output['userId'] = Auth::User()->id;
 	  }
 	  
     $output['success'] = true;
