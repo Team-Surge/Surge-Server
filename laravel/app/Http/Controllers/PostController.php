@@ -279,7 +279,8 @@ class PostController extends ReqController {
         }
       ])->get();
 
-      $this->votesToStatus($posts);      
+      $this->votesToStatus($posts); 
+      $this->postsAddOwnership($posts);     
 
     }
     else
@@ -309,6 +310,9 @@ class PostController extends ReqController {
       $this->votesToStatus($posts);     
       
       $output['success'] = true; 
+      
+      $this->postsAddOwnership($posts);
+      
       $output['posts'] = $posts;
 
     }
@@ -339,6 +343,26 @@ class PostController extends ReqController {
       }
       
       unset($post['votes']);
+    }
+  }
+
+  protected function postsAddOwnership(&$posts)
+  {
+    $user = Auth::User();
+    
+    if(!is_null($user))
+    {
+      foreach($posts as $post)
+      {
+        if($post->user_id == $user->id)
+        {
+          $post->ownedByUser = true;
+        }
+        else
+        {
+          $post->ownedByUser = false;
+        }
+      }
     }
   }
 
