@@ -138,4 +138,33 @@ Value
 @endforeach
 </table>
 
+<h3>Poll</h3>
+
+<table class="table table-striped table-bordered">
+<tr>
+<th>
+Option
+</th>
+<th>
+Text
+</th>
+<th>
+Votes
+</th>
+</tr>
+@for($i = 1; $i <= $post->poll->optionCount; $i++)
+<tr>
+<td>
+#{{$i}}
+</td>
+<td>
+{{ $post->poll->{"option" . $i} }}
+</td>
+<td>
+{{ $post->poll->{"option" . $i . "Count"} }}
+</td>
+</tr>
+@endfor
+</table>
+
 @endsection

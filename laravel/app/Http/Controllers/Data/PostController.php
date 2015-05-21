@@ -21,7 +21,7 @@ class PostController extends \App\Http\Controllers\Controller {
     $data = [];
     
 	  $data['pageid'] = "posts";
-    $post = Post::with('votes','comments')->find($id);
+    $post = Post::with('votes','comments','poll')->find($id);
     
     if(!$post)
     {
