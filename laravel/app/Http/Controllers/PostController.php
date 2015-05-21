@@ -319,7 +319,7 @@ class PostController extends ReqController {
     $output['success'] = true;
     
     $location = $input['lat'] . ',' . $input['lng'];
-    $dist = 10;
+    $dist = 0.15;
     
     if(Auth::check())
     {
