@@ -17,6 +17,15 @@ ID
 
 <tr>
 <th>
+Type
+</th>
+<td>
+{{$post->type}}
+</td>
+</tr>
+
+<tr>
+<th>
 User ID
 </th>
 <td>
@@ -138,6 +147,8 @@ Value
 @endforeach
 </table>
 
+@if(!is_null($post->poll))
+
 <h3>Poll</h3>
 
 <table class="table table-striped table-bordered">
@@ -166,5 +177,7 @@ Votes
 </tr>
 @endfor
 </table>
+
+@endif
 
 @endsection
