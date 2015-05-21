@@ -3,6 +3,7 @@
 use App\Models\Post;
 use App\Models\Comment;
 use App\Models\Vote;
+use App\Models\Poll;
 use \Hash;
 use Auth;
 
@@ -13,7 +14,13 @@ class PostController extends ReqController {
 	  'postCreate' =>
   	  [
         'handle' => 'string|max:15',
-        'content' => 'required|string|min:1|max:200'
+        'content' => 'required|string|min:1|max:200',
+        'type' => 'in:standard,poll',
+        'pollOptionCount' => 'required_if:type,poll|integer|min:1|max:4',
+        'pollOption1' => 'required_if:type,poll|string|max:50',
+        'pollOption2' => 'string|max:50',
+        'pollOption3' => 'string|max:50',
+        'pollOption4' => 'string|max:50',
       ],
       
 	  'postCreateComment' =>
@@ -59,6 +66,12 @@ class PostController extends ReqController {
 	{
 	
     $valid = Auth::check();
+    
+    // Backwards compatibility with unset post types
+    if(!isset($input['type']))
+    {
+      $input['type'] = 'standard';
+    }
 	  
 	  if(!$valid)
 	  {
@@ -71,7 +84,28 @@ class PostController extends ReqController {
       $post->user_id = Auth::user()->id;
       $post->handle = $input['handle'];
       $post->content = $input['content'];
+      $post->type = $input['type'];
+      
       $post->save();
+      
+      if($input['type'] == 'poll')
+      {
+        $poll = new Poll;
+        
+        $count = intval($input['pollOptionCount']);
+        
+        $poll->optionCount = $count;
+        
+        for($i = 1; $i <= $count; $i++)
+        {
+          $prop = 'option' . $i;
+          $inputProp = 'pollOption' . $i;
+          $poll->$prop = isset($input[$inputProp]) ? $input[$inputProp] : "";
+        }
+        
+        $post->poll()->save($poll);
+        
+      }
       
       $output['success'] = true; 
     }
