@@ -203,7 +203,8 @@ class PostController extends ReqController {
           {
             $user = Auth::User();
             $query->where('user_id', '=', $user->id);
-          }
+          },
+          'poll'
       ]
       )->find($input['postId']);
       
