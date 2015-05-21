@@ -63,6 +63,15 @@ Score
 
 <tr>
 <th>
+Location
+</th>
+<td>
+{{$post->location}}
+</td>
+</tr>
+
+<tr>
+<th>
 Delete
 </th>
 <td>

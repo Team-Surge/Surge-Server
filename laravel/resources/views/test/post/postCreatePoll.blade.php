@@ -32,6 +32,18 @@
     <label>Option 4</label>
     <input type="text" name="pollOption4" class="form-control"/>
   </div>
+  
+  <div class="form-group">
+    <label>Lat</label>
+    <input id="mapLat_poll" name="lat" class="form-control"/>
+  </div>
+  
+  <div class="form-group">
+    <label>Lng</label>
+    <input id="mapLng_poll" name="lng" class="form-control"/>
+  </div>
+  
+  <button class="postMapLoad btn btn-default" data-for="poll">Map</button>
   <button type="submit" class="btn btn-default">Post</button>
 </form>
 

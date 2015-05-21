@@ -21,6 +21,8 @@ class PostController extends ReqController {
         'pollOption2' => 'string|max:50',
         'pollOption3' => 'string|max:50',
         'pollOption4' => 'string|max:50',
+        'lat' => 'required|numeric|min:-90|max:90',
+        'lng' => 'required|numeric|min:-180|max:180',
       ],
       
 	  'postCreateComment' =>
@@ -53,6 +55,11 @@ class PostController extends ReqController {
       [
         'postId' => 'required',
         'selection' => 'required|integer|min:0|max:4',
+      ],
+	  'postList' =>
+  	  [
+        'lat' => 'required|numeric|min:-90|max:90',
+        'lng' => 'required|numeric|min:-180|max:180',
       ],
 	];
 	
@@ -91,6 +98,7 @@ class PostController extends ReqController {
       $post->handle = $input['handle'];
       $post->content = $input['content'];
       $post->type = $input['type'];
+      $post->location = $input['lat'] . ',' . $input['lng'];
       
       $post->save();
       
@@ -310,6 +318,9 @@ class PostController extends ReqController {
   {
     $output['success'] = true;
     
+    $location = $input['lat'] . ',' . $input['lng'];
+    $dist = 10;
+    
     if(Auth::check())
     {
       $posts = Post::with(
@@ -318,7 +329,7 @@ class PostController extends ReqController {
           $user = Auth::User();
           $query->where('user_id', '=', $user->id);
         }
-      ])->get();
+      ])->whereRaw('st_distance(location,POINT('.$location.')) < '.$dist)->get();
 
       $this->votesToStatus($posts); 
       $this->postsAddOwnership($posts);     

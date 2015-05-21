@@ -87,5 +87,32 @@ $( '.ajax_test_form' ).submit(function( event ) {
   });
 });
 
+$('.postMapLoad').click(function(e)
+{
+  e.preventDefault();
+  
+  mapfor = $(e.target).attr('data-for');
+  
+  var modal = $('#mapModal');
+  var save = $('#mapSave');
+  
+  modal.modal('show');
+  
+  modal.on('shown.bs.modal', function(e)
+  {
+    google.maps.event.trigger(map, "resize");
+  });
+  
+  google.maps.event.addListener(map, 'click', function(event) {
+
+      //marker = new google.maps.Marker({position: event.latLng, map: map});
+      
+      $('#mapLat' + '_' + mapfor).val(event.latLng.lat())
+      $('#mapLng' + '_' + mapfor).val(event.latLng.lng())
+
+  });
+
+});
+
 });
 
