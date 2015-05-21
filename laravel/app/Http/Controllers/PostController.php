@@ -405,22 +405,18 @@ class PostController extends ReqController {
           break;
 
         }
-       
-        $vote = $comment->votes()->where('user_id', '=', $user->id)->first();
         
-        $voteOld = 0;
-        
-        if(is_null($vote))
-        {
-          $vote = new Vote;
-          $vote->user_id = $user->id;
-          $vote->vote_id = $comment->id;          
-        }
+        $vote = $comment->votes()->firstOrCreate(
+          [
+            'user_id' => $user->id,
+            'comment_id' => $comment->id
+          ]
+          );
 
         $voteOld = $vote->value;
         
         $vote->value = $dir;
-        $comment->votes()->save($vote);
+        $vote->save();
         
         $comment->increment('voteCount', $dir + ($voteOld * -1));
         
