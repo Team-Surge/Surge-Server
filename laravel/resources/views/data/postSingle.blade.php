@@ -178,6 +178,29 @@ Votes
 @endfor
 </table>
 
+<h3>Poll Responses</h3>
+
+<table class="table table-striped table-bordered">
+<tr>
+<th>
+User
+</th>
+<th>
+Response
+</th>
+</tr>
+@foreach($post->poll->responses as $response)
+<tr>
+<td>
+{{$response->user_id}}
+</td>
+<td>
+{{$response->value}}
+</td>
+</tr>
+@endforeach
+</table>
+
 @endif
 
 @endsection

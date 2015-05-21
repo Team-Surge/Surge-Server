@@ -7,12 +7,10 @@ class Poll extends Model {
 	protected $table = 'polls';
 	protected $hidden = ['user_id'];
   
-  /*
-  public function comments()
+  public function responses()
   {
-      return $this->hasMany('App\Models\Comment');
+      return $this->hasMany('App\Models\Response');
   }
-  */
 
 
 }

@@ -49,6 +49,11 @@ class PostController extends ReqController {
         'commentId' => 'required',
         'direction' => 'required|string|in:up,down,neutral',
       ],
+    'postPollRespond' =>
+      [
+        'postId' => 'required',
+        'selection' => 'required|integer|min:0|max:4',
+      ],
 	];
 	
   protected $validActions = [
@@ -58,6 +63,7 @@ class PostController extends ReqController {
 	  "postDetail",
 	  "postVote",
 	  "postCommentVote",
+	  "postPollRespond",
 	  "postList",
 	  "postListSelf"
   ];
@@ -458,6 +464,82 @@ class PostController extends ReqController {
 
       }
     }
+	}
+	
+	protected function postPollRespond($input, &$output)
+	{
+    $valid = Auth::check();
+    
+    if(!$valid)
+    {
+      $output['success'] = false;
+      $output['reasons'] = ['Not authenticated'];
+    }
+    else
+    {
+      $user = Auth::User();    
+      $post = Post::find($input['postId']);
+      
+      if(is_null($post))
+      {
+        $output['success'] = false;
+        $output['reasons'] = ['No such post'];  
+      }
+      else
+      {  
+        
+        $poll = $post->poll;
+        
+        if(is_null($poll))
+        {
+          $output['success'] = false;
+          $output['reasons'] = ['No such poll'];
+        }
+        else
+        {
+        
+          $selection = intval($input['selection']);
+          
+          if($selection > $poll->optionCount)
+          {
+            $output['success'] = false;
+            $output['reasons'] = ['No such option'];
+          }
+          else
+          {
+        
+            $response = $poll->responses()->firstOrCreate(
+              [
+                'user_id' => $user->id,
+                'poll_id' => $poll->id
+              ]
+              );
+            
+            $selectionOld = $response->value;
+            
+            $response->value = $selection;
+            $response->save();
+            
+            if($selection != 0)
+            {
+              $poll->increment('option' . $selection . 'Count', 1);
+            }
+            
+            if($selectionOld != 0)
+            {
+              $poll->decrement('option' . $selectionOld . 'Count', 1);
+            }
+            
+            $output['success'] = true;
+          
+          }
+        
+        }
+
+      }
+      
+    }
+ 
 	}
 
 }
