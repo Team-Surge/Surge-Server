@@ -30,7 +30,7 @@ class CreateTableResponses extends Migration {
       
       // Foreign key in post table
       $table->foreign('poll_id')
-        ->references('id')->on('posts')
+        ->references('id')->on('polls')
         ->onDelete('cascade');
         
       // Foreign key in user table
