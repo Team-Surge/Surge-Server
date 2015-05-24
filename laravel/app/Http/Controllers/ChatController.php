@@ -137,7 +137,6 @@ class ChatController extends ReqController {
         if($u->id == $user->id)
         {
           $tid = $u->pivot->tid;
-          break;
         }
       }
       
