@@ -12,4 +12,14 @@ class Comment extends Model {
       return $this->morphMany('App\Models\Vote', 'vote');
   }
 
+  public function post()
+  {
+      return $this->belongsTo('App\Models\Post');
+  }
+
+  public function post()
+  {
+    return $this->belongsTo('App\Models\User');
+  }
+  
 }

@@ -40,7 +40,7 @@ class ReqController extends Controller {
       else
       {
         $output['success'] = false;
-        $output['reasons'] = ['No such method'];
+        $output['reasons'] = ['No such method ' . $input['action']];
       }
     }
 	

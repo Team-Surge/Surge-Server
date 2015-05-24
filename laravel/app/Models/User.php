@@ -35,5 +35,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
   {
       return $this->hasMany('App\Models\Post');
   }
+  
+  public function conversations()
+  {
+    return $this->belongsToMany('App\Models\Conversation')->withPivot('tid');
+  }
 
 }

@@ -24,6 +24,11 @@ class Post extends Model {
       return $this->hasOne('App\Models\Poll');
   }
   
+  public function user()
+  {
+      return $this->belongsTo('App\Models\User');
+  }
+  
   /*
     Based Shamelessly on:
     http://www.codetutorial.io/geo-spatial-mysql-laravel-5/

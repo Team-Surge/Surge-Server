@@ -19,6 +19,8 @@ Route::any('/auth', 'AuthController@process');
 
 Route::any('/post', 'PostController@process');
 
+Route::any('/chat', 'ChatController@process');
+
 Route::get('/data', 
 function()
 {
@@ -44,5 +46,11 @@ Route::resource(
 Route::resource(
 '/data/comments',
 'Data\CommentController',
+['only' => ['index', 'destroy', 'show']]
+);
+
+Route::resource(
+'/data/conversations',
+'Data\ConversationController',
 ['only' => ['index', 'destroy', 'show']]
 );
