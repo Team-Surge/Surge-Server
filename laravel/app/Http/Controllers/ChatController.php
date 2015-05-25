@@ -149,8 +149,33 @@ class ChatController extends ReqController {
 	protected function chatDetail($input, &$output)	
 	{
 	  $user = Auth::User();
-	
-	  $conversation = $user->conversations()->with('messages')->find($input['conversationId']);
+	  
+	  $conversation = null;
+	  
+	  if(isset($input['conversationId']))
+	  {
+	    $conversation = $user->conversations()->with('messages')->find($input['conversationId']);
+	  }
+	  else
+	  {
+	    $details = $this->findChatDetails($input);
+	    
+	    if($details !== false)
+	    {
+	      $otherId = $details['other'];
+	      echo $otherId;
+	      $conversations = $user->conversations()->with('messages','users')->get();
+	      
+	      foreach($conversations as $convo)
+	      {
+	        if($convo->users->contains($otherId))
+	        {
+	          $conversation = $convo;
+	          break;
+	        }
+	      }
+	    }
+	  }
 	  
 	  if(is_null($conversation))
 	  {
@@ -180,6 +205,10 @@ class ChatController extends ReqController {
         $subject = $comment->content;
         
         $other = $comment->user;
+      }
+      else
+      {
+        return false;
       }
       
     }
