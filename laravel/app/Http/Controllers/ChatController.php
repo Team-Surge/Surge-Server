@@ -23,6 +23,16 @@ class ChatController extends ReqController {
         'conversationId' => 'required|integer',
         'content' => 'required|string|min:1|max:200',
       ],
+	  'chatSend' =>
+  	  [
+        'conversationId' => 'required|integer',
+        'content' => 'required|string|min:1|max:200',
+      ],
+	  'chatSend' =>
+  	  [
+        'conversationId' => 'required|integer',
+        'content' => 'required|string|min:1|max:200',
+      ],
 	];
 	
   protected $validActions = [
@@ -63,8 +73,7 @@ class ChatController extends ReqController {
       $post = Post::find($input['fromId']);
       $subject = $post->content;
       
-      $other = $post->user;
-      
+      $other = $post->user;     
     }
     
     if(is_null($post))
@@ -149,12 +158,30 @@ class ChatController extends ReqController {
 	
 	protected function chatList($input, &$output)
 	{
+	  $user = Auth::User();
 	
+	  $conversations = $user->conversations()->get();
+	  
+	  $output['conversations'] =  $conversations;
 	}
 	
 	protected function chatDetail($input, &$output)	
 	{
+	  $user = Auth::User();
 	
+	  $conversation = $user->conversations()->with('messages')->find($input['conversationId']);
+	  
+	  if(is_null($conversation))
+	  {
+	    $output['success'] = false;
+	    $output['reasons'] = ['No such chat'];
+	  }
+	  else
+	  {
+	    $output['success'] = true;
+	    $output['conversation'] = $conversation;
+	  }
+	  
 	}
 }
 
