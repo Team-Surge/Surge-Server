@@ -41,133 +41,110 @@ class ChatController extends ReqController {
 
 	protected function chatCreate($input, &$output)
 	{
-	
-    $valid = Auth::check();
-	  
-	  if(!$valid)
-	  {
+    $post = null;
+    $other = null;
+    $subject = "";
+    
+    if($input['fromType'] == "comment")
+    {
+      $comment = Comment::find($input['fromId']);
+      
+      if(!is_null($comment))
+      {
+        $post = $comment->post();
+        $subject = $comment->content;
+        
+        $other = $comment->user;
+      }
+      
+    }
+    else if($input['fromType'] == "post")
+    {
+      $post = Post::find($input['fromId']);
+      $subject = $post->content;
+      
+      $other = $post->user;
+      
+    }
+    
+    if(is_null($post))
+    {
       $output['success'] = false;
-      $output['reasons'] = ['Not authenticated'];
+      $output['reasons'] = ['No such Post or Comment'];
+      
+      return;
     }
-    else
-    {   
-      $post = null;
-      $other = null;
-      $subject = "";
+    
+    if(is_null($other))
+    {
+      $output['success'] = false;
+      $output['reasons'] = ['No such User'];
       
-      if($input['fromType'] == "comment")
-      {
-        $comment = Comment::find($input['fromId']);
-        
-        if(!is_null($comment))
-        {
-          $post = $comment->post();
-          $subject = $comment->content;
-          
-          $other = $comment->user;
-        }
-        
-      }
-      else if($input['fromType'] == "post")
-      {
-        $post = Post::find($input['fromId']);
-        $subject = $post->content;
-        
-        $other = $post->user;
-        
-      }
-      
-      if(is_null($post))
-      {
-        $output['success'] = false;
-        $output['reasons'] = ['No such Post or Comment'];
-        
-        return;
-      }
-      
-      if(is_null($other))
-      {
-        $output['success'] = false;
-        $output['reasons'] = ['No such User'];
-        
-        return;
-      }
-
-      $user = Auth::User();
-
-      $convo = new Conversation;
-      $convo->post_id = $post->id;
-      $convo->subject = $subject;
-      $convo->save();
-      
-      $convo->users()->attach($user->id, ['tid' => 0]);
-      $convo->users()->attach($other->id, ['tid' => 1]);
-      
-      $output['conversationId'] = $convo->id;
-      $output['success'] = true; 
+      return;
     }
+
+    $user = Auth::User();
+
+    $convo = new Conversation;
+    $convo->post_id = $post->id;
+    $convo->subject = $subject;
+    $convo->save();
+    
+    $convo->users()->attach($user->id, ['tid' => 0]);
+    $convo->users()->attach($other->id, ['tid' => 1]);
+    
+    $output['conversationId'] = $convo->id;
+    $output['success'] = true; 
 
 	}
 
 	protected function chatSend($input, &$output)
 	{
-	
-    $valid = Auth::check();
-	  
-	  if(!$valid)
-	  {
+    $conversation = Conversation::with('users')->find($input['conversationId']);
+    
+    if(is_null($conversation))
+    {
       $output['success'] = false;
-      $output['reasons'] = ['Not authenticated'];
+      $output['reasons'] = ['No such conversation'];
+      return;
     }
-    else
-    {   
-      $conversation = Conversation::with('users')->find($input['conversationId']);
-      
-      if(is_null($conversation))
+    
+    $user = Auth::User();
+    
+    $users = $conversation->users;
+    
+    $tid = false;
+    
+    $recipients = [];
+    
+    foreach($users as $u)
+    {
+      $recipients[] = $u->id;
+    
+      if($u->id == $user->id)
       {
-        $output['success'] = false;
-        $output['reasons'] = ['No such conversation'];
-        return;
+        $tid = $u->pivot->tid;
       }
-      
-      $user = Auth::User();
-      
-      $users = $conversation->users;
-      
-      $tid = false;
-      
-      $recipients = [];
-      
-      foreach($users as $u)
-      {
-        $recipients[] = $u->id;
-      
-        if($u->id == $user->id)
-        {
-          $tid = $u->pivot->tid;
-        }
-      }
-      
-      if($tid === false)
-      {
-        $output['success'] = false;
-        $output['reasons'] = ['Not a participant'];
-        return;
-      }
-      
-      $message = new Message;
-      $message->conversation_id = $conversation->id;
-      $message->content = $input['content'];
-      $message->tid = $tid;
-      
-      $message->save();
-      
-      $chat = new Chat;
-      $chat->send($user->id, $recipients ,json_encode($message));
-      
-      $output['success'] = true; 
     }
-
+    
+    if($tid === false)
+    {
+      $output['success'] = false;
+      $output['reasons'] = ['Not a participant'];
+      return;
+    }
+    
+    $message = new Message;
+    $message->conversation_id = $conversation->id;
+    $message->content = $input['content'];
+    $message->tid = $tid;
+    
+    $message->save();
+    
+    $chat = new Chat;
+    $chat->send($user->id, $recipients ,json_encode($message));
+    
+    $output['success'] = true;
 	}
 	
 	protected function chatList($input, &$output)

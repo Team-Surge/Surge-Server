@@ -68,19 +68,9 @@ class AuthController extends ReqController {
   
 	protected function userDelete($input, &$output)
   { 
-    $valid = Auth::check();
-    
-    if($valid)
-    {
-      $user = Auth::User();
-      $user->delete();
-      $output['success'] = true;
-    }
-    else
-    {
-      $output['success'] = false;
-      $output['reasons'] = ['Not authenticated'];
-    }
+    $user = Auth::User();
+    $user->delete();
+    $output['success'] = true;
   }
   
 	protected function userStatus($input, &$output)
