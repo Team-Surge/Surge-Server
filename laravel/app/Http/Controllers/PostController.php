@@ -221,10 +221,16 @@ class PostController extends ReqController {
       ['comments', 'comments.votes' => 
           function($query)
           {
-            $user = Auth::User();
+
             $query->where('user_id', '=', $user->id);
           },
-          'poll'
+          'poll',
+          'poll.responses' =>
+          function($query)
+          {
+            $user = Auth::User();
+            $query->where('user_id', '=', $user->id);
+          }
       ]
       )->find($input['postId']);
       
@@ -243,6 +249,17 @@ class PostController extends ReqController {
         
         unset($comment['votes']);
       }
+      
+      if(isset($post['poll']['responses'][0]))
+      {
+        $post['userResponse'] = $post['poll']['responses'][0]['value'];
+        unset($post['poll']['responses']);
+      }
+      else
+      {
+        $post['userResponse'] = 0;
+      }
+      
       
     }
     else
