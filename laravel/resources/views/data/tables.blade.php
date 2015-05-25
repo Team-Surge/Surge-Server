@@ -10,7 +10,7 @@
 <th>Empty</th>
 </tr>
 
-@foreach(['posts' => 'Posts', 'users' => 'Users', 'votes' => 'Votes', 'comments' => 'Comments'] as $key => $name)
+@foreach(['posts' => 'Posts', 'users' => 'Users', 'votes' => 'Votes', 'comments' => 'Comments', 'conversation_user' => 'convo pivot', 'conversations' => 'Conversations', 'messages' => 'Messages'] as $key => $name)
 
 <tr>
 <td>

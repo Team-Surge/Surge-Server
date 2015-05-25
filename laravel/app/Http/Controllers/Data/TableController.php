@@ -21,7 +21,7 @@ class TableController extends \App\Http\Controllers\Controller {
 	{
 	  $action = Input::get('action');
 	  
-	  $valid = ['posts', 'users', 'votes', 'comments'];
+	  $valid = ['posts', 'users', 'votes', 'comments', 'conversations', 'messages', 'conversation_user'];
 	  
 	  if(!in_array($table, $valid))
 	  {
