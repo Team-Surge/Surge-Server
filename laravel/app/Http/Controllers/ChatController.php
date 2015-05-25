@@ -51,31 +51,12 @@ class ChatController extends ReqController {
 
 	protected function chatCreate($input, &$output)
 	{
-    $post = null;
-    $other = null;
-    $subject = "";
-    
-    if($input['fromType'] == "comment")
-    {
-      $comment = Comment::find($input['fromId']);
-      
-      if(!is_null($comment))
-      {
-        $post = $comment->post();
-        $subject = $comment->content;
-        
-        $other = $comment->user;
-      }
-      
-    }
-    else if($input['fromType'] == "post")
-    {
-      $post = Post::find($input['fromId']);
-      $subject = $post->content;
-      
-      $other = $post->user;     
-    }
-    
+	  $details = $this->findChatDetails($input);
+	  
+	  $post = $details['post'];
+	  $other = $details['other'];
+	  $subject = $details['subject'];
+	
     if(is_null($post))
     {
       $output['success'] = false;
@@ -180,8 +161,47 @@ class ChatController extends ReqController {
 	  {
 	    $output['success'] = true;
 	    $output['conversation'] = $conversation;
-	  }
-	  
+	  } 
 	}
+	
+	protected function findChatDetails($input)
+	{
+    $post = null;
+    $other = null;
+    $subject = "";
+	
+    if($input['fromType'] == "comment")
+    {
+      $comment = Comment::find($input['fromId']);
+      
+      if(!is_null($comment))
+      {
+        $post = $comment->post;
+        $subject = $comment->content;
+        
+        $other = $comment->user;
+      }
+      
+    }
+    else if($input['fromType'] == "post")
+    {
+      $post = Post::find($input['fromId']);
+      $subject = $post->content;
+      
+      $other = $post->user;     
+    }
+    else
+    {
+      return false;
+    }
+    
+    return [
+      'post' => $post,
+      'subject' => $subject,
+      'other' => $other
+      ];
+
+	}
+	
 }
 
