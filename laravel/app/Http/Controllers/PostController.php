@@ -221,7 +221,7 @@ class PostController extends ReqController {
       ['comments', 'comments.votes' => 
           function($query)
           {
-
+            $user = Auth::User();
             $query->where('user_id', '=', $user->id);
           },
           'poll',
