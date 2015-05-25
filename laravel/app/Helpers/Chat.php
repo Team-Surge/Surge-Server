@@ -93,7 +93,16 @@ class Chat {
 
   protected function write($message)
   {
-    return fwrite($this->socket, json_encode($message));
+    try
+    {
+      $result = fwrite($this->socket, json_encode($message));
+    }
+    catch(Exception $e)
+    {
+      return false;
+    }
+  
+    return $result;
   }
   
   protected function read()
