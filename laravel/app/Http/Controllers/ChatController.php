@@ -56,6 +56,8 @@ class ChatController extends ReqController {
 	  $post = $details['post'];
 	  $other = $details['other'];
 	  $subject = $details['subject'];
+	  
+	  $conversation = null;
 	
     if(is_null($post))
     {
@@ -72,18 +74,36 @@ class ChatController extends ReqController {
       
       return;
     }
-
+    
     $user = Auth::User();
+    
+    if($details !== false)
+    {
+      $otherId = $details['other']->id;
+      $conversations = $user->conversations()->with('messages','users')->get();
+      
+      foreach($conversations as $convo)
+      {
+        if($convo->users->contains($otherId))
+        {
+          $conversation = $convo;
+          break;
+        }
+      }
+    }
 
-    $convo = new Conversation;
-    $convo->post_id = $post->id;
-    $convo->subject = $subject;
-    $convo->save();
+    if(is_null($conversation))
+    {
+      $conversation = new Conversation;
+      $conversation->post_id = $post->id;
+      $conversation->subject = $subject;
+      $conversation->save();
+      
+      $conversation->users()->attach($user->id, ['tid' => 0]);
+      $conversation->users()->attach($other->id, ['tid' => 1]);
+    }
     
-    $convo->users()->attach($user->id, ['tid' => 0]);
-    $convo->users()->attach($other->id, ['tid' => 1]);
-    
-    $output['conversationId'] = $convo->id;
+    $output['conversationId'] = $conversation->id;
     $output['success'] = true; 
 
 	}
@@ -162,8 +182,7 @@ class ChatController extends ReqController {
 	    
 	    if($details !== false)
 	    {
-	      $otherId = $details['other'];
-	      echo $otherId;
+	      $otherId = $details['other']->id;
 	      $conversations = $user->conversations()->with('messages','users')->get();
 	      
 	      foreach($conversations as $convo)
