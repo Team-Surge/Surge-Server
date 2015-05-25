@@ -80,7 +80,7 @@ class ChatController extends ReqController {
     if($details !== false)
     {
       $otherId = $details['other']->id;
-      $conversations = $user->conversations()->with('messages','users')->get();
+      $conversations = $user->conversations()->with('messages','users')->where('post_id', '=', $post->id)->get();
       
       foreach($conversations as $convo)
       {
@@ -180,10 +180,12 @@ class ChatController extends ReqController {
 	  {
 	    $details = $this->findChatDetails($input);
 	    
+	    $post = $details['post'];
+	    
 	    if($details !== false)
 	    {
 	      $otherId = $details['other']->id;
-	      $conversations = $user->conversations()->with('messages','users')->get();
+	      $conversations = $user->conversations()->with('messages','users')->where('post_id', '=', $post->id)->get();
 	      
 	      foreach($conversations as $convo)
 	      {
@@ -234,6 +236,12 @@ class ChatController extends ReqController {
     else if($input['fromType'] == "post")
     {
       $post = Post::find($input['fromId']);
+      
+      if(is_null($post))
+      {
+        return false;
+      }
+      
       $subject = $post->content;
       
       $other = $post->user;     
