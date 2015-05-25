@@ -74,6 +74,18 @@ class PostController extends ReqController {
 	  "postList",
 	  "postListSelf"
   ];
+  
+  protected $authActions = [
+	  "postCreate",
+	  "postCreateComment",
+	  "postDelete",
+	  "postDetail",
+	  "postVote",
+	  "postCommentVote",
+	  "postPollRespond",
+	  "postList",
+	  "postListSelf"
+  ];
 
 	protected function postCreate($input, &$output)
 	{

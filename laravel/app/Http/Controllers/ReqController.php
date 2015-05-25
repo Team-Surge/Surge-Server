@@ -2,6 +2,7 @@
 
 use \Request;
 use \Validator;
+use \Auth;
 
 class ReqController extends Controller {
 
@@ -14,8 +15,10 @@ class ReqController extends Controller {
     
     Please also define $validActions, to validate requested actions.
     
+    Please define $authActions, to ensure that the user is authenticated
+    
   */
-
+  
 	public function process()
 	{
 	  $input = Request::all();
@@ -27,6 +30,16 @@ class ReqController extends Controller {
 	  {
       $output['success'] = false;
       $output['reasons'] = ['No such action']; 
+	  }
+	  
+	  if(in_array($input['action'], $this->authActions))
+	  {
+      if(!Auth::check())
+	    {
+        $output['success'] = false;
+        $output['reasons'] = ['Not Authenticated'];
+  		  return json_encode($output);
+      }
 	  }
 	  
 	  $valid = $this->reqValidate($input, $output, $input['action']);

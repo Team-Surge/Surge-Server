@@ -31,6 +31,13 @@ class ChatController extends ReqController {
 	  "chatList",
 	  "chatDetail",
   ];
+  
+  protected $authActions = [
+	  "chatCreate",
+	  "chatSend",
+	  "chatList",
+	  "chatDetail",
+  ];
 
 	protected function chatCreate($input, &$output)
 	{
@@ -96,6 +103,7 @@ class ChatController extends ReqController {
       $convo->users()->attach($user->id, ['tid' => 0]);
       $convo->users()->attach($other->id, ['tid' => 1]);
       
+      $output['conversationId'] = $convo->id;
       $output['success'] = true; 
     }
 
@@ -157,11 +165,19 @@ class ChatController extends ReqController {
       $chat = new Chat;
       $chat->send($user->id, $recipients ,json_encode($message));
       
-           
       $output['success'] = true; 
     }
 
 	}
-		
+	
+	protected function chatList($input, &$output)
+	{
+	
+	}
+	
+	protected function chatDetail($input, &$output)	
+	{
+	
+	}
 }
 

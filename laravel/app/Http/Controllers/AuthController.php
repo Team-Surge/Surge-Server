@@ -28,6 +28,10 @@ class AuthController extends ReqController {
 	  "userDelete",
 	  "userStatus"
   ];
+  
+  protected $authActions = [
+	  "userDelete",
+  ];
 
 	protected function userCreate($input, &$output)
 	{
