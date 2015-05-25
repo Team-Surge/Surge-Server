@@ -1,5 +1,7 @@
 <?php namespace App\Helpers;
 
+use \Exception;
+
 class Chat {
 
   public function __construct()
@@ -14,10 +16,12 @@ class Chat {
     $errno = 0;
     $errstr = "";
     $timeout = 2;
-
-    $result = $this->socket = pfsockopen ($hostname, $port, $errno, $errstr, $timeout);
     
-    if(!$result)
+    try
+    {
+      $result = $this->socket = pfsockopen ($hostname, $port, $errno, $errstr, $timeout);
+    }
+    catch(Exception $e)
     {
       return false;
     }
