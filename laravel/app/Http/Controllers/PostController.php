@@ -342,6 +342,11 @@ class PostController extends ReqController {
         
         $post->increment('voteCount', $dir + ($voteOld * -1));
         
+        if($post->voteCount <= -5)
+        {
+          $post->delete();
+        }
+        
         $output['success'] = true;
 
       }
