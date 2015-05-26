@@ -72,6 +72,15 @@ Location
 
 <tr>
 <th>
+Tags
+</th>
+<td>
+{{ implode(', ', $post->tags) }}
+</td>
+</tr>
+
+<tr>
+<th>
 Delete
 </th>
 <td>
