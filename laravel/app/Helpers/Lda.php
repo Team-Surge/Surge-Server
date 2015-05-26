@@ -7,10 +7,10 @@ class Lda {
 	  $command = "python " . app_path() . "/lda/lda2.py load " . escapeshellarg($input);
 	  $output = [];
 	  $result = 0;
-	
-	
-	  echo $command;
+	  
     exec($command, $output, $result);
+    
+    array_shift($output);
     
     if($result != 0)
     {

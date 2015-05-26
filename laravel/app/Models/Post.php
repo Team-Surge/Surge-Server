@@ -63,5 +63,15 @@ class Post extends Model {
     return parent::newQuery($excludeDeleted)->addSelect('*',DB::raw($raw));
   }
 
+  public function getTagsAttribute($value)
+  {
+    return explode(',', $value);
+  }
+  
+  public function setTagsAttribute($value)
+  {
+    $this->attributes['tags'] = implode(',', $value);
+  }
+
 
 }

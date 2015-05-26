@@ -115,7 +115,7 @@ class PostController extends ReqController {
       
       $topics = Lda::topics($input['content']);
       
-      $output['topics'] = $topics;
+      $post->tags = $topics;
       
       $post->save();
       
