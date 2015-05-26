@@ -4,6 +4,7 @@ use App\Models\Post;
 use App\Models\Comment;
 use App\Models\Vote;
 use App\Models\Poll;
+use App\Helpers\Lda;
 use \Hash;
 use Auth;
 
@@ -111,6 +112,10 @@ class PostController extends ReqController {
       $post->content = $input['content'];
       $post->type = $input['type'];
       $post->location = $input['lat'] . ',' . $input['lng'];
+      
+      $topics = Lda::topics($input['content']);
+      
+      $output['topics'] = $topics;
       
       $post->save();
       

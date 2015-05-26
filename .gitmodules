@@ -1,0 +1,3 @@
+[submodule "laravel/app/lda"]
+	path = laravel/app/lda
+	url = https://github.com/Team-Surge/lda
