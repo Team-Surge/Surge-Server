@@ -152,7 +152,7 @@ class ChatController extends ReqController {
     $message->save();
     
     $chat = new Chat;
-    $chat->send($user->id, $recipients ,json_encode($message));
+    $chat->send($user->id, $recipients, $message);
     
     $output['success'] = true;
 	}

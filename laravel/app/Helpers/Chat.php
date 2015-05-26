@@ -122,7 +122,7 @@ class Chat {
     'messageType' => 'chat',
     'senderID' => $sender,
     'recipientID' => $receivers,
-    'message' => json_encode($message)
+    'message' => $message
     ];
     
     $this->write($data);
