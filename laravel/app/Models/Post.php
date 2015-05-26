@@ -70,7 +70,10 @@ class Post extends Model {
   
   public function setTagsAttribute($value)
   {
-    $this->attributes['tags'] = implode(',', $value);
+    if(is_array($value))
+    {
+      $this->attributes['tags'] = implode(',', $value);
+    }
   }
 
 
